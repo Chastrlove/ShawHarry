@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "preserve",
+    "noEmit": true,
+    "lib": ["esnext"],
+    "strict": true,
+    "allowJs": true
+  },
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "shaw-harry",
+  "version": "1.0.0",
+  "description": "自搭建的webpack工程",
+  "main": "index.js",
+  "author": "chastlove",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.1.5",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/build.js",
+    "tcm": "tcm -p ./src/**/*.pcss && tcm -p ./src/**/*.pcss -w"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-typescript": "^7.1.0",
+    "@types/react": "^16.7.7",
+    "@types/react-dom": "^16.0.10",
+    "babel-loader": "8.0.4",
+    "clean-webpack-plugin": "^1.0.0",
+    "css-loader": "^1.0.1",
+    "file-loader": "^2.0.0",
+    "handlebars": "^4.0.12",
+    "handlebars-loader": "^1.7.0",
+    "html-webpack-plugin": "4.0.0-alpha.2",
+    "mini-css-extract-plugin": "^0.4.5",
+    "node-fs-extra": "^0.8.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.4.0",
+    "precss": "^4.0.0",
+    "prettier": "^1.15.2",
+    "react-dev-utils": "^6.1.1",
+    "style-loader": "^0.23.1",
+    "terser-webpack-plugin": "^1.1.0",
+    "typed-css-modules": "^0.3.7",
+    "webpack": "^4.26.0",
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10",
+    "webpack-manifest-plugin": "^2.0.4"
+  }
+}
