@@ -4,7 +4,7 @@ import { HashRouter as Router, Route } from "react-router-dom";
 import { routes } from "page/admin/routes";
 import * as _ from "lodash";
 
-class App extends React.Component<any> {
+export class App extends React.Component<any> {
   render() {
     return (
       <Router>
