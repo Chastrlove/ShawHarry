@@ -10,8 +10,10 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.1.5",
+    "antd": "^3.10.9",
     "react": "^16.6.3",
-    "react-dom": "^16.6.3"
+    "react-dom": "^16.6.3",
+    "react-router-dom": "^4.3.1"
   },
   "scripts": {
     "dev": "node scripts/dev.js",
@@ -21,11 +23,15 @@
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-typescript": "^7.1.0",
+    "@types/lodash": "^4.14.118",
     "@types/react": "^16.7.7",
     "@types/react-dom": "^16.0.10",
+    "@types/react-router-dom": "^4.3.1",
     "babel-loader": "8.0.4",
+    "babel-plugin-import": "^1.11.0",
     "clean-webpack-plugin": "^1.0.0",
     "css-loader": "^1.0.1",
     "file-loader": "^2.0.0",
@@ -45,7 +51,6 @@
     "typed-css-modules": "^0.3.7",
     "webpack": "^4.26.0",
     "webpack-bundle-analyzer": "^3.0.3",
-    "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-manifest-plugin": "^2.0.4"
   }

@@ -1,12 +1,43 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es5",
     "jsx": "preserve",
     "noEmit": true,
-    "lib": ["esnext"],
+    "lib": ["esnext","dom"],
     "strict": true,
-    "allowJs": true
+    "moduleResolution": "node",
+    "allowJs": true,
+    "baseUrl": "src",
+    "paths": {
+      "utils/*": [
+        "utils/*"
+      ],
+      "entry/*": [
+        "client/entry/*"
+      ],
+      "resource/*": [
+        "client/resource/*"
+      ],
+      "common/*": [
+        "client/common/*"
+      ],
+      "components/*": [
+        "client/components/*"
+      ],
+      "page/*": [
+        "client/page/*"
+      ],
+      "api/*": [
+        "client/api/*"
+      ]
+    }
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "./node_modules"
+  ],
+  "include": [
+    "src/client/**/*",
+    "src/utils/**/*"
+  ]
 }

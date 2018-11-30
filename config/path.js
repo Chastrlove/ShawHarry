@@ -12,6 +12,8 @@ module.exports = {
   appBuild:resolveApp("dist"),
   config: resolveApp("config"),
   src: resolveApp("src"),
-  entry: resolveApp("src/entry"),
+  client: resolveApp("client"),
+  entry: resolveApp("src/client/entry"),
   appPublic: resolveApp("public"),
+  appTsConfig: resolveApp('tsconfig.json'),
 };

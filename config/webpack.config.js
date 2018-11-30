@@ -20,7 +20,9 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPl
 
 const publicPath = "/";
 
-const { entry: entryPath, src, appPublic, appBuild } = paths;
+const { entry: entryPath, src, appPublic, appBuild, appTsConfig } = paths;
+
+const tsConfig = require(appTsConfig);
 
 const outputPath = appBuild;
 
@@ -33,11 +35,11 @@ function createEntry() {
     .filter((file) => {
       return (
         fs.lstatSync(path.join(entryPath, file)).isDirectory() &&
-        fs.existsSync(path.join(entryPath, file, "index.js"))
+        fs.existsSync(path.join(entryPath, file, "index.tsx"))
       );
     })
     .forEach((file) => {
-      entry[file] = [path.join(entryPath, `${file}/index.js`)];
+      entry[file] = [path.join(entryPath, `${file}/index.tsx`)];
       template[file] = path.join(entryPath, `${file}/index.hbs`);
     })
     .value();
@@ -58,6 +60,7 @@ module.exports = (env) => {
       hot: true,
       inline: true,
       compress: true,
+      historyApiFallback: true,
       // contentBase: "/", // 服务器启动的根目录，默认为当前执行目录，一般不需要设置
       watchContentBase: true,
       publicPath: publicPath, // dev-server静态资源存放的位置
@@ -73,6 +76,14 @@ module.exports = (env) => {
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".pcss", ".less", ".css", ".svg", ".html"],
+      alias: _.chain(tsConfig.compilerOptions.paths)
+        .mapKeys(function(value, key) {
+          return _.replace(key, "/*", "");
+        })
+        .mapValues(function(value) {
+          return path.join(src, _.replace(value, "/*", "/"));
+        })
+        .value(),
     },
 
     module: {
@@ -102,6 +113,19 @@ module.exports = (env) => {
                 importLoaders: 1,
                 localIdentName: "[name]__[local]___[hash:5]",
               },
+            },
+            {
+              loader: "postcss-loader",
+              options: postCssConfig,
+            },
+          ],
+        },
+        {
+          test: /\.css$/,
+          use: [
+            devMode ? "style-loader" : MiniCssExtractPlugin.loader,
+            {
+              loader: "css-loader",
             },
             {
               loader: "postcss-loader",
