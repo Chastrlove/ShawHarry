@@ -1595,7 +1595,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cashDateDetail(cashMonthQueryVo: CashMonthQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<CashMonthVo>> {
+        cashDateDetail(cashMonthQueryVo: CashMonthQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<CashMonthVo> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).cashDateDetail(cashMonthQueryVo, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1614,7 +1614,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cashDateList(cashMonthQueryVo: CashMonthQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<CashMonthListVo>> {
+        cashDateList(cashMonthQueryVo: CashMonthQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<CashMonthListVo> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).cashDateList(cashMonthQueryVo, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1633,7 +1633,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cashParamList(paramType: number, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<Array<CashParam>>> {
+        cashParamList(paramType: number, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Array<CashParam>> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).cashParamList(paramType, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1652,7 +1652,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cashRecordList(cashRecordQueryVo: CashRecordQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<Array<CashRecordDayVo>>> {
+        cashRecordList(cashRecordQueryVo: CashRecordQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<Array<CashRecordDayVo>> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).cashRecordList(cashRecordQueryVo, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1671,7 +1671,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cashRecordListExport(cashRecordQueryVo: CashRecordQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<any>> {
+        cashRecordListExport(cashRecordQueryVo: CashRecordQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).cashRecordListExport(cashRecordQueryVo, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1690,7 +1690,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createCashParam(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        createCashParam(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).createCashParam(cashParam, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1709,7 +1709,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createCashRecord(cashRecord: CashRecord, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        createCashRecord(cashRecord: CashRecord, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).createCashRecord(cashRecord, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1728,7 +1728,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCashAccount(accountId: number, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<boolean>> {
+        deleteCashAccount(accountId: number, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<boolean> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).deleteCashAccount(accountId, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1747,7 +1747,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCashParam(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        deleteCashParam(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).deleteCashParam(cashParam, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1766,7 +1766,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCashRecord(cashRecord: CashRecord, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        deleteCashRecord(cashRecord: CashRecord, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).deleteCashRecord(cashRecord, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1784,7 +1784,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        downloadCashTemplate(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<any>> {
+        downloadCashTemplate(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).downloadCashTemplate(options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1803,7 +1803,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        importCashRecords(excelFile: any, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<ExcelImportResultVo>> {
+        importCashRecords(excelFile: any, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<ExcelImportResultVo> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).importCashRecords(excelFile, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1823,7 +1823,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        queryAccountDetail(accountId: number, pageSize?: number, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<AssetsAccountOverviewVo>> {
+        queryAccountDetail(accountId: number, pageSize?: number, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<AssetsAccountOverviewVo> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).queryAccountDetail(accountId, pageSize, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1841,7 +1841,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        queryAllAccountsDetail(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<AssetsManagerOverviewVo>> {
+        queryAllAccountsDetail(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<AssetsManagerOverviewVo> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).queryAllAccountsDetail(options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1861,7 +1861,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        queryCashFlow(accountId: number, assetsAccountDailyFlowQueryVo: AssetsAccountDailyFlowQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<AssetsAccountDailyFlowPagingVo>> {
+        queryCashFlow(accountId: number, assetsAccountDailyFlowQueryVo: AssetsAccountDailyFlowQueryVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<AssetsAccountDailyFlowPagingVo> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).queryCashFlow(accountId, assetsAccountDailyFlowQueryVo, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1880,7 +1880,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        saveCashAccount(cashAccountVo: CashAccountVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        saveCashAccount(cashAccountVo: CashAccountVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).saveCashAccount(cashAccountVo, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1899,7 +1899,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        tagStarTarget(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        tagStarTarget(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).tagStarTarget(cashParam, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1918,7 +1918,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCashAccountBalance(cashAccountVo: CashAccountVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<boolean>> {
+        updateCashAccountBalance(cashAccountVo: CashAccountVo, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<boolean> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).updateCashAccountBalance(cashAccountVo, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1937,7 +1937,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCashParam(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        updateCashParam(cashParam: CashParam, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).updateCashParam(cashParam, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
@@ -1956,7 +1956,7 @@ export const CashFlowApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCashRecord(cashRecord: CashRecord, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<BaseResponse<number>> {
+        updateCashRecord(cashRecord: CashRecord, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<number> {
             const localVarFetchArgs = CashFlowApiFetchParamCreator(configuration).updateCashRecord(cashRecord, options);
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
