@@ -9,10 +9,14 @@
         "ignoreBrowserslistConfig": true,
         "useBuiltIns": false,
         "modules": false,
-        "exclude": ["transform-typeof-symbol"]
+        "exclude": [
+          "transform-typeof-symbol"
+        ]
       }
     ],
-    ["@babel/preset-react"],
+    [
+      "@babel/preset-react"
+    ],
     "@babel/preset-typescript"
   ],
   "plugins": [
@@ -24,10 +28,19 @@
       },
       "antd"
     ],
-    "@babel/plugin-proposal-class-properties",
-
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ],
     "@babel/plugin-proposal-object-rest-spread",
-
     "@babel/plugin-syntax-dynamic-import",
     [
       "@babel/plugin-transform-runtime",
@@ -40,3 +53,4 @@
     ]
   ]
 }
+

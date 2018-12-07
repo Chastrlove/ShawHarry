@@ -89,7 +89,7 @@ module.exports = (env) => {
     module: {
       rules: [
         {
-          test: /.(jsx|js|tx|tsx)$/,
+          test: /\.(jsx|js|ts|tsx)$/,
           loader: "babel-loader",
           options: {
             cacheDirectory: true,
