@@ -2,23 +2,20 @@ const path = require("path");
 const paths = require("./path");
 const _ = require("lodash");
 const fs = require("fs");
-
 const webpack = require("webpack");
-
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
+const WebpackBar = require('webpackbar');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
 const postCssConfig = require("../postcss.config");
-
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
 const publicPath = "/";
+
+exports.publicPath = publicPath;
 
 const { entry: entryPath, src, appPublic, appBuild, appTsConfig } = paths;
 
@@ -27,6 +24,7 @@ const tsConfig = require(appTsConfig);
 const outputPath = appBuild;
 
 const { entry, template } = createEntry();
+let lastProgress;
 
 function createEntry() {
   let entry = {};
@@ -52,11 +50,11 @@ function createEntry() {
 module.exports = (env) => {
   const devMode = env !== "production";
   return {
-    mode: env,
-    devtool: devMode && "cheap-module-source-map",
-    devServer: {
+    mode: 'development',
+    devtool: "cheap-module-source-map",
+    /*   devServer : {  //因为node 启动webpack-dev-server devServer不能加，影响hmr
       host: "localhost",
-      port: 3010,
+      port: 8010,
       hot: true,
       inline: true,
       compress: true,
@@ -64,7 +62,7 @@ module.exports = (env) => {
       // contentBase: "/", // 服务器启动的根目录，默认为当前执行目录，一般不需要设置
       watchContentBase: true,
       publicPath: publicPath, // dev-server静态资源存放的位置
-    },
+    },*/
     entry: entry,
     output: {
       path: outputPath, // dev模式不需要这玩意，因为与webpack-dev-server完全无关
@@ -72,7 +70,7 @@ module.exports = (env) => {
       chunkFilename: "js/[name].[hash:8].chunk.js",
       publicPath: publicPath, // 给打包后js的引用路径为加前缀
       devtoolModuleFilenameTemplate: (info) =>
-        path.resolve(info.absoluteResourcePath).replace(/\\/g, "/"),
+        `webpack:///${path.resolve(info.absoluteResourcePath).replace(/\\/g, "/")}`,
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".pcss", ".less", ".css", ".svg", ".html"],
@@ -197,11 +195,19 @@ module.exports = (env) => {
         new webpack.DefinePlugin({
           "process.env": JSON.stringify(env),
         }),
+        new WebpackBar({
+         /* profile:true,
+          reporters: [ 'profile']*/
+        }),
+        new webpack.NamedModulesPlugin(),
         new MiniCssExtractPlugin({
           filename: devMode ? "[name].css" : "css/[name].[hash].css",
           chunkFilename: devMode ? "[id].css" : "css/[id].[hash].css",
         }),
-        new webpack.HotModuleReplacementPlugin(),
+        new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+        //webpack-dev-server v3.2.0以后不需要
+        //https://github.com/webpack/webpack-dev-server/pull/1612#issue-241011738
+        //new webpack.HotModuleReplacementPlugin(),
         new ManifestPlugin({
           fileName: "asset-manifest.json",
           publicPath: publicPath,

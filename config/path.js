@@ -16,4 +16,7 @@ module.exports = {
   entry: resolveApp("src/client/entry"),
   appPublic: resolveApp("public"),
   appTsConfig: resolveApp('tsconfig.json'),
+  appPackageJson: resolveApp('package.json'),
+  yarnLockFile: resolveApp('yarn.lock'),
+  appNodeModules: resolveApp('node_modules'),
 };

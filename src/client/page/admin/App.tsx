@@ -4,6 +4,10 @@ import { HashRouter as Router, Route } from "react-router-dom";
 import { routes } from "page/admin/routes";
 import * as _ from "lodash";
 
+export const ThemeContext = React.createContext({
+  theme: 'light',
+});
+
 export class App extends React.Component<any> {
   render() {
     return (
