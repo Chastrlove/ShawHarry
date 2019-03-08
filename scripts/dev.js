@@ -11,7 +11,7 @@ const webpackConfig = require(`${path.join(paths.config, "webpack.config.js")}`)
 
 const devServer = {
   host: "localhost",
-  port: 8080,
+  port: 8081,
   hot: true,
   inline: true,
   compress: true,

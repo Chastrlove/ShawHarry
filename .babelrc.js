@@ -1,6 +1,6 @@
 module.exports = function(api) {
   //https://babeljs.io/docs/en/config-files
-  api.cache(true);//https://github.com/babel/babel/issues/9104#issuecomment-443448080
+  api.cache(true); //https://github.com/babel/babel/issues/9104#issuecomment-443448080
   return {
     presets: [
       [
@@ -41,6 +41,8 @@ module.exports = function(api) {
       ],
       "@babel/plugin-proposal-object-rest-spread",
       "@babel/plugin-syntax-dynamic-import",
+      "@babel/plugin-proposal-optional-chaining", //a?.b
+      ["@babel/plugin-proposal-pipeline-operator", { proposal: "minimal" }], //a|>b
       [
         "@babel/plugin-transform-runtime",
         {
