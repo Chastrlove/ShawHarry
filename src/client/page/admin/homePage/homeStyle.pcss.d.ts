@@ -1,2 +1,6 @@
-export const message: string;
-export const love: string;
+declare const styles: {
+  readonly "message": string;
+  readonly "love": string;
+};
+export = styles;
+

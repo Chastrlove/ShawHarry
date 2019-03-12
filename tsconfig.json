@@ -18,6 +18,9 @@
       "entry/*": [
         "client/entry/*"
       ],
+      "assets/*": [
+        "client/assets/*"
+      ],
       "resource/*": [
         "client/resource/*"
       ],

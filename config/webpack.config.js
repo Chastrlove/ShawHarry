@@ -69,8 +69,6 @@ module.exports = (env) => {
       filename: "js/[name].[hash:8].js",
       chunkFilename: "js/[name].[hash:8].chunk.js",
       publicPath: publicPath, // 给打包后js的引用路径为加前缀
-      devtoolModuleFilenameTemplate: (info) =>
-        `webpack:///${path.resolve(info.absoluteResourcePath).replace(/\\/g, "/")}`,
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".pcss", ".less", ".css", ".svg", ".html"],
@@ -115,6 +113,10 @@ module.exports = (env) => {
             {
               loader: "postcss-loader",
               options: postCssConfig,
+            },
+            {
+              loader: "less-loader",
+              options: { javascriptEnabled: true } ,
             },
           ],
         },

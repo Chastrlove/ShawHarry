@@ -1,32 +1,25 @@
 import * as React from "react";
-import { Suspense } from "react";
 import { HashRouter as Router, Route } from "react-router-dom";
+import * as hashHistory from "history";
 import { routes } from "page/admin/routes";
 import * as _ from "lodash";
+import "./global.pcss";
+import { AuthorizedRoute } from "components/authorizedRoute/AuthorizedRoute";
+import { Suspense } from "react";
 
 export const ThemeContext = React.createContext({
-  theme: 'light',
+  theme: "light",
 });
 
 export class App extends React.Component<any> {
   render() {
     return (
       <Router>
-        <div>
-          {_.map(routes, (routeItem) => {
-            return (
-              <Route
-                key={routeItem.path}
-                path={routeItem.path}
-                render={(props) => (
-                  <Suspense fallback={null}>
-                    <routeItem.component {...props} />
-                  </Suspense>
-                )}
-              />
-            );
+        <React.Fragment>
+          {_.map(routes, (route) => {
+            return <AuthorizedRoute route={route} />;
           })}
-        </div>
+        </React.Fragment>
       </Router>
     );
   }

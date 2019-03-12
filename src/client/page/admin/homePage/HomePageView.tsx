@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Modal} from "antd";
 import * as style from "./homeStyle.pcss";
 import { observer } from "mobx-react";
 import { HomPageStore } from "page/admin/homePage/HomPageStore";
