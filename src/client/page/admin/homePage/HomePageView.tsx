@@ -6,7 +6,8 @@ import { HomPageStore } from "page/admin/homePage/HomPageStore";
 import { ThemeContext } from "page/admin/App";
 import { useEffect, useState } from "react";
 
- /*export class HomePageView extends React.Component<any> {
+@observer
+ export class HomePageView extends React.Component<any> {
   static contextType = ThemeContext;
   public store: HomPageStore = new HomPageStore();
 
@@ -21,8 +22,8 @@ import { useEffect, useState } from "react";
       </div>
     );
   }
-}*/
-
+}
+/*
 export const HomePageView=function(props) {
   const [width, setWidth] = useState(11211);
 
@@ -40,4 +41,4 @@ export const HomePageView=function(props) {
   return (
     <p style={{color:'red'}}> window wid1th is {width}</p>
   )
-}
+}*/

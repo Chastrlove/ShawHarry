@@ -1,11 +1,9 @@
 import * as React from "react";
-import { HashRouter as Router, Route } from "react-router-dom";
-import * as hashHistory from "history";
+import { HashRouter as Router } from "react-router-dom";
 import { routes } from "page/admin/routes";
 import * as _ from "lodash";
 import "./global.pcss";
 import { AuthorizedRoute } from "components/authorizedRoute/AuthorizedRoute";
-import { Suspense } from "react";
 
 export const ThemeContext = React.createContext({
   theme: "light",
@@ -17,7 +15,7 @@ export class App extends React.Component<any> {
       <Router>
         <React.Fragment>
           {_.map(routes, (route) => {
-            return <AuthorizedRoute route={route} />;
+            return <AuthorizedRoute route={route} key={route.path}/>;
           })}
         </React.Fragment>
       </Router>

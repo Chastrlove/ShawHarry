@@ -2,7 +2,6 @@ import * as React from "react";
 import { Layout } from "antd";
 import { LayoutSider } from "components/layout/sider/LayoutSider";
 import * as styles from "components/layout/LayoutBasicStyle.pcss";
-import { HashRouter as Router, Route } from "react-router-dom";
 import { AuthorizedRoute } from "components/authorizedRoute/AuthorizedRoute";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -17,7 +16,7 @@ export default class layoutBasicView extends React.Component<any> {
           <Header />
           <Content>
             {routes.map((route, key) => {
-              return <AuthorizedRoute route={route} />
+              return <AuthorizedRoute route={route} key={route.path}/>
             })}
           </Content>
           <Footer />
