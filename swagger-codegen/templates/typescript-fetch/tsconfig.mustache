@@ -3,14 +3,18 @@
     "declaration": true,
     "target": "{{#supportsES6}}es6{{/supportsES6}}{{^supportsES6}}es5{{/supportsES6}}",
     "module": "commonjs",
-    "noImplicitAny": true,
+    "moduleResolution": "node",
     "outDir": "dist",
-    "rootDir": "."{{^supportsES6}},
+    "rootDir": ".",
+    {{^supportsES6}}
     "lib": [
       "es6",
       "dom"
-    ]
+    ],
     {{/supportsES6}}
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
   "exclude": [
     "dist",

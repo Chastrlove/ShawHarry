@@ -15,6 +15,7 @@ const devServer = {
   hot: true,
   inline: true,
   compress: true,
+  clientLogLevel: 'none',
   historyApiFallback: true,
   // contentBase: "/", // 服务器启动的根目录，默认为当前执行目录，一般不需要设置
   watchContentBase: true,

@@ -214,7 +214,7 @@ module.exports = (env) => {
           fileName: "asset-manifest.json",
           publicPath: publicPath,
         }),
-        // new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin(),
       ],
     ),
   };
