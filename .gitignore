@@ -13,3 +13,16 @@ static.zip
 .history/
 
 ## ignore config
+将删除 .idea/.name
+将删除 .idea/ShawHarry.iml
+将删除 .idea/codeStyles/
+将删除 .idea/compiler.xml
+将删除 .idea/encodings.xml
+将删除 .idea/inspectionProfiles/
+将删除 .idea/jsLinters/
+将删除 .idea/misc.xml
+将删除 .idea/modules.xml
+将删除 .idea/workspace.xml
+将删除 src/client/page/admin/page2/
+将删除 src/client/page/login/
+将删除 src/utils/
