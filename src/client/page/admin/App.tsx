@@ -1,26 +1,37 @@
 import * as React from "react";
-import { HashRouter as Router } from "react-router-dom";
-import { routes } from "page/admin/routes";
-import * as _ from "lodash";
 import "./global.pcss";
-import { AuthorizedRoute } from "components/authorizedRoute/AuthorizedRoute";
+import { observer } from "mobx-react";
+
+import { AppStore } from "./AppStore";
+import { HomePageView } from "page/admin/homePage/HomePageView";
+import { useEffect, useState } from "react";
 
 export const ThemeContext = React.createContext({
   theme: "light",
 });
 
+@observer
 export class App extends React.Component<any> {
-  render() {
-    return (
-      <Router>
-        <React.Fragment>
-          {_.map(routes, (route) => {
-            return <AuthorizedRoute route={route} key={route.path}/>;
-          })}
-        </React.Fragment>
-      </Router>
-    );
+  public store = new AppStore();
+
+  public componentDidMount(): void {
+    this.store.getValue();
+  }
+
+  public componentWillMount(): void {}
+
+  public render() {
+    return <HomePageView />;
   }
 }
 
-export default App;
+export const Cmp12 = ({ name }) => {
+  if (name !== "") {
+    useEffect(function persistForm() {
+      localStorage.setItem("formData", name);
+    });
+  }
+  return 123;
+};
+
+export default Bad3;

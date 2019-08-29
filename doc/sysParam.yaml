@@ -1,0 +1,148 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "yhxk-api"
+  description: "Application related APIs."
+host: "localhost:8080"
+schemes:
+  - "http"
+basePath: "/"
+produces:
+  - "application/json"
+tags:
+  - name: "sysParam"
+    description: "Application Form related APIs"
+paths:
+  /sys/bank:
+    get:
+      tags:
+        - "sysParam"
+      summary: "银行列表查询"
+      description: "银行列表查询"
+      operationId: "getBank"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: response ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SysParamVo"
+        "401":
+          description: auth fail
+          schema:
+            type: "string"
+        "403":
+          description: access denied
+          schema:
+            type: "string"
+        "599":
+          description: error
+          schema:
+            type: "string"
+  /sys/area:
+    get:
+      tags:
+        - sysParam
+      summary: "地区列表查询"
+      description: "地区列表查询"
+      operationId: getArea
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: "query"
+          name: "dict"
+          description: "区域级别，1 省 ;2 市;3 县、区"
+          required: true
+          type: "string"
+          enum:
+            - 1
+            - 2
+            - 3
+        - in: "query"
+          name: "pValue"
+          description: "区域父级值"
+          required: false
+          type: "string"
+      responses:
+        "200":
+          description: response ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SysParamVo"
+        "401":
+          description: auth fail
+          schema:
+            type: "string"
+        "403":
+          description: access denied
+          schema:
+            type: "string"
+        "599":
+          description: error
+          schema:
+            type: "string"
+  /sys/{bankCode}/{cityCode}:
+    get:
+      tags:
+        - "sysParam"
+      summary: "银行支行列表查询"
+      description: "银行支行列表查询"
+      operationId: getBankBranch
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: "path"
+          name: "bankCode"
+          description: "银行code"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cityCode"
+          description: "城市code"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: response ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SysParamVo"
+        "401":
+          description: auth fail
+          schema:
+            type: "string"
+        "403":
+          description: access denied
+          schema:
+            type: "string"
+        "599":
+          description: error
+          schema:
+            type: "string"
+
+definitions:
+  SysParamVo:
+    type: "object"
+    properties:
+      pkey:
+        type: "string"
+        description: "参数查询key值"
+      pvalue:
+        type: "string"
+        description: "参数值"
+      pdesc:
+        type: "string"
+        description: "参数显示值"
+      ppvalue:
+        type: "string"
+        description: "参数父级值"

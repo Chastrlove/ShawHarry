@@ -1,5 +1,15 @@
-# Created by .ignore support plugin (hsz.mobi)
 .idea/
 .DS_Store
+temp/
 node_modules/
 yarn-error.log
+.cache-loader/
+.cache/
+native/
+dist/
+static/
+release.zip
+static.zip
+.history/
+
+## ignore config

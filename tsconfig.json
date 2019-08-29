@@ -1,48 +1,41 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "module": "esnext",
     "target": "es5",
-    "jsx": "preserve",
-    "noEmit": true,
-    "lib": ["esnext","dom"],
-    "strict": true,
+    "module": "esnext",
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "experimentalDecorators": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "pretty": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "strictPropertyInitialization": false,
+    "strict": true,
+    "alwaysStrict": true,
     "allowJs": true,
-    "baseUrl": "src",
+    "noStrictGenericChecks": true,
+    "locale": "zh-cn",
+    "baseUrl": ".",
     "paths": {
-      "utils/*": [
-        "utils/*"
-      ],
-      "entry/*": [
-        "client/entry/*"
-      ],
-      "assets/*": [
-        "client/assets/*"
-      ],
-      "resource/*": [
-        "client/resource/*"
-      ],
-      "common/*": [
-        "client/common/*"
-      ],
-      "components/*": [
-        "client/components/*"
-      ],
-      "page/*": [
-        "client/page/*"
-      ],
-      "api/*": [
-        "client/api/*"
-      ]
-    }
+      "utils/*": ["src/utils/*"],
+      "entry/*": ["src/client/entry/*"],
+      "assets/*": ["src/client/assets/*"],
+      "resource/*": ["src/client/resource/*"],
+      "common/*": ["src/client/common/*"],
+      "components/*": ["src/client/components/*"],
+      "page/*": ["src/client/page/*"],
+      "api/*": ["src/client/api/*"]
+    },
+    "lib": ["dom", "es6"]
   },
-  "exclude": [
-    "./node_modules"
-  ],
-  "include": [
-    "src/client/**/*",
-    "src/utils/**/*"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["src/**/*"]
 }

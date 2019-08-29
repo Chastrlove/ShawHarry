@@ -1,11 +1,11 @@
 import { lazy } from "react";
 import { AuthorizedRouteProps } from "components/authorizedRoute/AuthorizedRoute";
 
-export const routes:Array<AuthorizedRouteProps> = [
+export const routes: Array<AuthorizedRouteProps> = [
   {
     path: "/",
     component: lazy(() => import("components/layout/layoutBasic")),
-    routes:[
+    routes: [
       {
         path: "/dashboard",
         component: lazy(() => import("page/admin/homePage")),
@@ -15,7 +15,5 @@ export const routes:Array<AuthorizedRouteProps> = [
         component: lazy(() => import("page/admin/form")),
       },
     ],
-
   },
-
 ];
