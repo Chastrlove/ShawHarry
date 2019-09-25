@@ -1,4 +1,7 @@
 import { exists, mapValues } from '../runtime';
+import { FormStore, IFormField, FormType } from 'common/FormStore';
+import { Field } from 'common/Field';
+import * as _ from 'lodash';
 {{#hasImports}}
 import {
     {{#imports}}
@@ -104,7 +107,7 @@ export function {{classname}}ToJSON(value?: {{classname}}): any {
         '{{baseName}}': value.{{name}},
         {{/isFreeFormObject}}
         {{/isMapContainer}}
-        {{/isListContainer}}        
+        {{/isListContainer}}
         {{/isPrimitiveType}}
         {{/isReadOnly}}
         {{/vars}}

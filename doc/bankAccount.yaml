@@ -1,0 +1,248 @@
+swagger: "2.0"
+info:
+  description: 服务API
+  version: "1.0"
+  title: 前端服务
+  contact:
+    name: SC-Finance
+  license:
+    name: License
+    url: "https://www.ruiwingroup.com"
+host: "localhost:8080"
+basePath: /
+tags:
+  - name: bank-account
+    description: 银行账户相关接口
+paths:
+  /bankaccount/add:
+    post:
+      tags:
+        - bank-account
+      summary: 新建企业银行账户
+      description: 新建企业银行账户
+      operationId: createBankAccountUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: accountReqDto
+          description: accountReqDto
+          required: true
+          schema:
+            $ref: "#/definitions/AddBankAccountReqDto"
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+  "/bankaccount/default/{bankAccountId}":
+    put:
+      tags:
+        - bank-account
+      summary: 设置企业的默认账户
+      operationId: setDefaultBankAccountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: bankAccountId
+          in: path
+          description: 账户Id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+  /bankaccount/export:
+    get:
+      tags:
+        - bank-account
+      summary: 银行账户列表导出
+      description: 导出企业的银行账户列表excel
+      operationId: exportCorpBankAccountsUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/octet-stream
+      parameters:
+        - name: corpCode
+          in: query
+          description: 企业代码
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+            format: byte
+  /bankaccount/list:
+    get:
+      tags:
+        - bank-account
+      summary: 银行账户列表
+      description: 获取企业的银行账户列表
+      operationId: getCorpBankAccountsUsingGET
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: corpCode
+          in: query
+          description: 企业代码
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/BankAccountVo"
+  /bankaccount/page:
+    get:
+      tags:
+        - bank-account
+      summary: 银行账户列表
+      description: 获取企业的银行账户列表
+      operationId: getCorpBankAccountsPageUsingGET
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: corpCode
+          in: query
+          description: 企业代码
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/BankAccountVo"
+  "/bankaccount/{bankAccountId}/status/{status}":
+    put:
+      tags:
+        - bank-account
+      summary: 启用/禁用银行账户
+      operationId: setBankAccountStatusUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: bankAccountId
+          in: path
+          description: 账户Id
+          required: true
+          type: integer
+          format: int64
+        - name: status
+          in: path
+          description: 账户状态
+          required: true
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+definitions:
+  AddBankAccountReqDto:
+    type: object
+    required:
+      - accountName
+      - accountNo
+      - bankId
+      - bankName
+      - branchId
+      - branchName
+      - cityGbCode
+      - corpCode
+      - provinceGbCode
+    properties:
+      accountName:
+        type: string
+        description: 账户名称
+      accountNo:
+        type: string
+        description: 账户号码
+      bankId:
+        type: integer
+        format: int64
+        description: 银行Id
+      bankName:
+        type: string
+        description: 银行名称
+      branchId:
+        type: integer
+        format: int64
+        description: 分行Id
+      branchName:
+        type: string
+        description: 分行名称
+      cityGbCode:
+        type: string
+        description: 市国标码
+      corpCode:
+        type: string
+        description: 企业代码
+      provinceGbCode:
+        type: string
+        description: 省国标码
+    description: 新增企业账户Dto
+  BankAccountVo:
+    type: object
+    properties:
+      accountName:
+        type: string
+        description: 银行账户名称
+      accountNo:
+        type: string
+        description: 银行账号
+      bankName:
+        type: string
+        description: 银行名称
+      branchName:
+        type: string
+        description: 支行名称
+      city:
+        type: string
+        description: 市名称
+      corpCode:
+        type: string
+        description: 企业代码
+      createdTime:
+        type: string
+        format: date-time
+        description: 创建时间
+      id:
+        type: integer
+        format: int64
+        description: 账户Id
+      isDefault:
+        type: integer
+        format: int32
+        description: 是否默认账户，0不是，1是
+      province:
+        type: string
+        description: 省名称
+      status:
+        type: integer
+        format: int32
+        description: 账户状态。1正常，2冻结
+      type:
+        type: integer
+        format: int32
+        description: 账户类型，1.一般结算账号，现在只有1

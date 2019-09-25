@@ -12,6 +12,9 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import { FormStore, IFormField, FormType } from "common/FormStore";
+import { Field } from "common/Field";
+import * as _ from "lodash";
 /**
  *
  * @export
@@ -97,4 +100,30 @@ export enum UserDtoRoleEnum {
   _1 = "1",
   _2 = "2",
   _3 = "3",
+}
+
+export type UserDtoFormKeys = keyof UserDto;
+export type UserDtoNewType = { [P in UserDtoFormKeys]: UserDto[P] };
+export type UserDtoFormType = FormType<UserDtoNewType>;
+
+export function UserDtoFormDefault(): IFormField<UserDto> {
+  return {
+    realName: { value: void 0 },
+    role: { value: void 0 },
+    password: { value: void 0 },
+    confirmPassword: { value: void 0 },
+    mobile: { value: void 0 },
+    msgCode: { value: void 0 },
+    idCard: { value: void 0 },
+  } as any;
+}
+
+export function createUserDtoFormStore<T>(field?: IFormField<T>): UserDtoFormType & FormType<T> {
+  const fields: IFormField<T & UserDto> = _.merge<any, any>(UserDtoFormDefault(), field);
+  return new FormStore(_.mapValues<IFormField<T & UserDto>, Field<any>>(fields, (item: any) => {
+    if (typeof item!!.rules !== "undefined") {
+      return new Field(item).validators(...item.rules);
+    }
+    return new Field(item);
+  }) as any);
 }

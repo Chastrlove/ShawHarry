@@ -12,6 +12,8 @@
  */
 
 import * as runtime from "../runtime";
+import jsCookie from "js-cookie";
+
 import {
   CorpUserResourceDto,
   CorpUserResourceDtoFromJSON,
@@ -25,13 +27,51 @@ import {
   SysParamVo,
   SysParamVoFromJSON,
   SysParamVoToJSON,
-  UserDetailVo,
-  UserDetailVoFromJSON,
-  UserDetailVoToJSON,
   UserDto,
   UserDtoFromJSON,
   UserDtoToJSON,
 } from "../models";
+
+declare interface BaseResponse<T = any> {
+  status: number;
+  success: boolean;
+  result: T;
+  totalPage?: number;
+  totalCount?: number;
+  pageSize?: number;
+  currentPage: number;
+  header: Headers;
+}
+declare interface RequestExtraOptions {
+  alertMessage?: boolean;
+  headers?: { [key: string]: any };
+  [key: string]: any;
+}
+
+async function createResult<T = any>(response: runtime.ApiResponse<T>) {
+  const { status, headers } = response.raw;
+  const value = await response.value();
+
+  if (headers.has("Authorization")) {
+    jsCookie.set("Authorization", headers.get("Authorization") || "");
+  }
+
+  return {
+    result: value,
+    success: status >= 200 && status < 300,
+    header: headers,
+    status,
+    totalPage: Number(headers.get("X-Total-Page")),
+    totalCount: Number(headers.get("X-Total-Count")),
+    pageSize: Number(headers.get("X-Page-Size")),
+    currentPage: Number(headers.get("X-Current-Page")),
+  };
+}
+
+export interface CheckForgetPwdSmsCodeUsingGETRequest {
+  mobile: string;
+  verifyCode: string;
+}
 
 export interface CreateUserRequest {
   userDto: UserDto;
@@ -45,12 +85,12 @@ export interface ResetPasswordRequest {
   resetPasswordDto: ResetPasswordDto;
 }
 
-export interface StatusChangeRequest {
-  userVo: CorpUserVo;
+export interface SendForgetPasswordSmsUsingGETRequest {
+  mobile: string;
 }
 
-export interface UserDetailRequest {
-  userId: number;
+export interface StatusChangeRequest {
+  userVo: CorpUserVo;
 }
 
 /**
@@ -58,9 +98,78 @@ export interface UserDetailRequest {
  */
 export class UserApi extends runtime.BaseAPI {
   /**
+   * checkForgetPwdSmsCode
+   */
+  async checkForgetPwdSmsCodeUsingGETRaw(
+    requestParameters: CheckForgetPwdSmsCodeUsingGETRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<boolean>> {
+    if (requestParameters.mobile === null || requestParameters.mobile === undefined) {
+      throw new runtime.RequiredError(
+        "mobile",
+        "Required parameter requestParameters.mobile was null or undefined when calling checkForgetPwdSmsCodeUsingGET.",
+      );
+    }
+
+    if (requestParameters.verifyCode === null || requestParameters.verifyCode === undefined) {
+      throw new runtime.RequiredError(
+        "verifyCode",
+        "Required parameter requestParameters.verifyCode was null or undefined when calling checkForgetPwdSmsCodeUsingGET.",
+      );
+    }
+
+    const queryParameters: runtime.HTTPQuery = {};
+
+    if (requestParameters.mobile !== undefined) {
+      queryParameters["mobile"] = requestParameters.mobile;
+    }
+
+    if (requestParameters.verifyCode !== undefined) {
+      queryParameters["verifyCode"] = requestParameters.verifyCode;
+    }
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/user/forget/password/checkSms`,
+        method: "GET",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+      },
+      options.alertMessage,
+    );
+
+    return new runtime.TextApiResponse(response) as any;
+  }
+
+  /**
+   * checkForgetPwdSmsCode
+   */
+  async checkForgetPwdSmsCodeUsingGET(
+    requestParameters: CheckForgetPwdSmsCodeUsingGETRequest,
+    options?: RequestExtraOptions,
+  ): Promise<BaseResponse<boolean>> {
+    const response = await this.checkForgetPwdSmsCodeUsingGETRaw(requestParameters, options);
+    return createResult(response);
+  }
+
+  /**
    * 用户管理-添加用户
    */
-  async createUserRaw(requestParameters: CreateUserRequest): Promise<runtime.ApiResponse<number>> {
+  async createUserRaw(
+    requestParameters: CreateUserRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<number>> {
     if (requestParameters.userDto === null || requestParameters.userDto === undefined) {
       throw new runtime.RequiredError(
         "userDto",
@@ -74,42 +183,69 @@ export class UserApi extends runtime.BaseAPI {
 
     headerParameters["Content-Type"] = "application/json";
 
-    const response = await this.request({
-      path: `/user/create`,
-      method: "POST",
-      headers: headerParameters,
-      query: queryParameters,
-      body: UserDtoToJSON(requestParameters.userDto),
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
 
-    return new runtime.TextApiResponse(response);
+    const response = await this.request(
+      {
+        path: `/user/create`,
+        method: "POST",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+        body: UserDtoToJSON(requestParameters.userDto),
+      },
+      options.alertMessage,
+    );
+
+    return new runtime.TextApiResponse(response) as any;
   }
 
   /**
    * 用户管理-添加用户
    */
-  async createUser(requestParameters: CreateUserRequest): Promise<number> {
-    const response = await this.createUserRaw(requestParameters);
-    return await response.value();
+  async createUser(requestParameters: CreateUserRequest, options?: RequestExtraOptions): Promise<BaseResponse<number>> {
+    const response = await this.createUserRaw(requestParameters, options);
+    return createResult(response);
   }
 
   /**
    * 用户授权
    */
-  async distributeResourceRaw(requestParameters: DistributeResourceRequest): Promise<runtime.ApiResponse<void>> {
+  async distributeResourceRaw(
+    requestParameters: DistributeResourceRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<void>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
 
     headerParameters["Content-Type"] = "application/json";
 
-    const response = await this.request({
-      path: `/user/resource`,
-      method: "POST",
-      headers: headerParameters,
-      query: queryParameters,
-      body: CorpUserResourceDtoToJSON(requestParameters.dto),
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/user/resource`,
+        method: "POST",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+        body: CorpUserResourceDtoToJSON(requestParameters.dto),
+      },
+      options.alertMessage,
+    );
 
     return new runtime.VoidApiResponse(response);
   }
@@ -117,24 +253,39 @@ export class UserApi extends runtime.BaseAPI {
   /**
    * 用户授权
    */
-  async distributeResource(requestParameters: DistributeResourceRequest): Promise<void> {
-    await this.distributeResourceRaw(requestParameters);
+  async distributeResource(
+    requestParameters: DistributeResourceRequest,
+    options?: RequestExtraOptions,
+  ): Promise<BaseResponse<void>> {
+    await this.distributeResourceRaw(requestParameters, options);
   }
 
   /**
    * 管理用户列表
    */
-  async listUserRaw(): Promise<runtime.ApiResponse<Array<CorpUserVo>>> {
+  async listUserRaw(options: RequestExtraOptions = {}): Promise<runtime.ApiResponse<Array<CorpUserVo>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request({
-      path: `/user/list`,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/user/list`,
+        method: "GET",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+      },
+      options.alertMessage,
+    );
 
     return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CorpUserVoFromJSON));
   }
@@ -142,15 +293,18 @@ export class UserApi extends runtime.BaseAPI {
   /**
    * 管理用户列表
    */
-  async listUser(): Promise<Array<CorpUserVo>> {
-    const response = await this.listUserRaw();
-    return await response.value();
+  async listUser(options?: RequestExtraOptions): Promise<BaseResponse<Array<CorpUserVo>>> {
+    const response = await this.listUserRaw(options);
+    return createResult(response);
   }
 
   /**
    * 密码重置
    */
-  async resetPasswordRaw(requestParameters: ResetPasswordRequest): Promise<runtime.ApiResponse<boolean>> {
+  async resetPasswordRaw(
+    requestParameters: ResetPasswordRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<boolean>> {
     if (requestParameters.resetPasswordDto === null || requestParameters.resetPasswordDto === undefined) {
       throw new runtime.RequiredError(
         "resetPasswordDto",
@@ -164,29 +318,101 @@ export class UserApi extends runtime.BaseAPI {
 
     headerParameters["Content-Type"] = "application/json";
 
-    const response = await this.request({
-      path: `/user/reset/password`,
-      method: "PUT",
-      headers: headerParameters,
-      query: queryParameters,
-      body: ResetPasswordDtoToJSON(requestParameters.resetPasswordDto),
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
 
-    return new runtime.TextApiResponse(response);
+    const response = await this.request(
+      {
+        path: `/user/reset/password`,
+        method: "PUT",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+        body: ResetPasswordDtoToJSON(requestParameters.resetPasswordDto),
+      },
+      options.alertMessage,
+    );
+
+    return new runtime.TextApiResponse(response) as any;
   }
 
   /**
    * 密码重置
    */
-  async resetPassword(requestParameters: ResetPasswordRequest): Promise<boolean> {
-    const response = await this.resetPasswordRaw(requestParameters);
-    return await response.value();
+  async resetPassword(
+    requestParameters: ResetPasswordRequest,
+    options?: RequestExtraOptions,
+  ): Promise<BaseResponse<boolean>> {
+    const response = await this.resetPasswordRaw(requestParameters, options);
+    return createResult(response);
+  }
+
+  /**
+   * sendForgetPasswordSms
+   */
+  async sendForgetPasswordSmsUsingGETRaw(
+    requestParameters: SendForgetPasswordSmsUsingGETRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters.mobile === null || requestParameters.mobile === undefined) {
+      throw new runtime.RequiredError(
+        "mobile",
+        "Required parameter requestParameters.mobile was null or undefined when calling sendForgetPasswordSmsUsingGET.",
+      );
+    }
+
+    const queryParameters: runtime.HTTPQuery = {};
+
+    if (requestParameters.mobile !== undefined) {
+      queryParameters["mobile"] = requestParameters.mobile;
+    }
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/user/forget/password/sms`,
+        method: "GET",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+      },
+      options.alertMessage,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * sendForgetPasswordSms
+   */
+  async sendForgetPasswordSmsUsingGET(
+    requestParameters: SendForgetPasswordSmsUsingGETRequest,
+    options?: RequestExtraOptions,
+  ): Promise<BaseResponse<void>> {
+    await this.sendForgetPasswordSmsUsingGETRaw(requestParameters, options);
   }
 
   /**
    * 企业用户状态变更
    */
-  async statusChangeRaw(requestParameters: StatusChangeRequest): Promise<runtime.ApiResponse<number>> {
+  async statusChangeRaw(
+    requestParameters: StatusChangeRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<number>> {
     if (requestParameters.userVo === null || requestParameters.userVo === undefined) {
       throw new runtime.RequiredError(
         "userVo",
@@ -200,39 +426,66 @@ export class UserApi extends runtime.BaseAPI {
 
     headerParameters["Content-Type"] = "application/json";
 
-    const response = await this.request({
-      path: `/user/status`,
-      method: "PUT",
-      headers: headerParameters,
-      query: queryParameters,
-      body: CorpUserVoToJSON(requestParameters.userVo),
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
 
-    return new runtime.TextApiResponse(response);
+    const response = await this.request(
+      {
+        path: `/user/status`,
+        method: "PUT",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+        body: CorpUserVoToJSON(requestParameters.userVo),
+      },
+      options.alertMessage,
+    );
+
+    return new runtime.TextApiResponse(response) as any;
   }
 
   /**
    * 企业用户状态变更
    */
-  async statusChange(requestParameters: StatusChangeRequest): Promise<number> {
-    const response = await this.statusChangeRaw(requestParameters);
-    return await response.value();
+  async statusChange(
+    requestParameters: StatusChangeRequest,
+    options?: RequestExtraOptions,
+  ): Promise<BaseResponse<number>> {
+    const response = await this.statusChangeRaw(requestParameters, options);
+    return createResult(response);
   }
 
   /**
    * 用户所在企业列表
    */
-  async userCorpsRaw(): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
+  async userCorpsRaw(options: RequestExtraOptions = {}): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request({
-      path: `/user/corps`,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/user/corps`,
+        method: "GET",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+      },
+      options.alertMessage,
+    );
 
     return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SysParamVoFromJSON));
   }
@@ -240,41 +493,8 @@ export class UserApi extends runtime.BaseAPI {
   /**
    * 用户所在企业列表
    */
-  async userCorps(): Promise<Array<SysParamVo>> {
-    const response = await this.userCorpsRaw();
-    return await response.value();
-  }
-
-  /**
-   * 查看详情
-   */
-  async userDetailRaw(requestParameters: UserDetailRequest): Promise<runtime.ApiResponse<UserDetailVo>> {
-    if (requestParameters.userId === null || requestParameters.userId === undefined) {
-      throw new runtime.RequiredError(
-        "userId",
-        "Required parameter requestParameters.userId was null or undefined when calling userDetail.",
-      );
-    }
-
-    const queryParameters: runtime.HTTPQuery = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    const response = await this.request({
-      path: `/user/detail/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters.userId))),
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    });
-
-    return new runtime.JSONApiResponse(response, (jsonValue) => UserDetailVoFromJSON(jsonValue));
-  }
-
-  /**
-   * 查看详情
-   */
-  async userDetail(requestParameters: UserDetailRequest): Promise<UserDetailVo> {
-    const response = await this.userDetailRaw(requestParameters);
-    return await response.value();
+  async userCorps(options?: RequestExtraOptions): Promise<BaseResponse<Array<SysParamVo>>> {
+    const response = await this.userCorpsRaw(options);
+    return createResult(response);
   }
 }

@@ -2,6 +2,8 @@
 {{>licenseInfo}}
 
 import * as runtime from '../runtime';
+import jsCookie from 'js-cookie';
+
 {{#imports.0}}
 import {
     {{#imports}}
@@ -11,6 +13,42 @@ import {
     {{/imports}}
 } from '../models';
 {{/imports.0}}
+
+declare interface BaseResponse<T = any> {
+  status: number;
+  success: boolean;
+  result: T;
+  totalPage?: number;
+  totalCount?: number;
+  pageSize?: number;
+  currentPage: number;
+  header: Headers;
+}
+declare interface RequestExtraOptions {
+  alertMessage?: boolean;
+  headers?: { [key: string]: any };
+  [key: string]: any;
+}
+
+async function createResult<T=any>(response: runtime.ApiResponse<T>) {
+  const { status, headers } = response.raw;
+  const value = await response.value();
+
+  if (headers.has("Authorization")) {
+    jsCookie.set("Authorization", headers.get("Authorization") || "");
+  }
+
+  return {
+    result: value,
+    success: status >= 200 && status < 300,
+    header: headers,
+    status,
+    totalPage: Number(headers.get("X-Total-Page")),
+    totalCount: Number(headers.get("X-Total-Count")),
+    pageSize: Number(headers.get("X-Page-Size")),
+    currentPage: Number(headers.get("X-Current-Page")),
+  };
+};
 
 {{#operations}}
 {{#operation}}
@@ -39,7 +77,7 @@ export class {{classname}} extends runtime.BaseAPI {
      * {{&summary}}
      {{/summary}}
      */
-    async {{nickname}}Raw({{#allParams.0}}requestParameters: {{#prefixParameterInterfaces}}{{classname}}{{/prefixParameterInterfaces}}{{operationIdCamelCase}}Request{{/allParams.0}}): Promise<runtime.ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}>> {
+    async {{nickname}}Raw({{#allParams.0}}requestParameters: {{#prefixParameterInterfaces}}{{classname}}{{/prefixParameterInterfaces}}{{operationIdCamelCase}}Request,{{/allParams.0}}options:RequestExtraOptions={}): Promise<runtime.ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}>> {
         {{#allParams}}
         {{#required}}
         if (requestParameters.{{paramName}} === null || requestParameters.{{paramName}} === undefined) {
@@ -173,10 +211,19 @@ export class {{classname}} extends runtime.BaseAPI {
 
         {{/isListContainer}}
         {{/formParams}}
+        if (this.configuration && this.configuration.accessToken) {
+        // oauth required
+          if (typeof this.configuration.accessToken === 'function') {
+            headerParameters["Authorization"] = this.configuration.accessToken("{{name}}", [{{#scopes}}"{{{scope}}}"{{^-last}}, {{/-last}}{{/scopes}}]);
+          } else {
+            headerParameters["Authorization"] = this.configuration.accessToken;
+          }
+        }
+
         const response = await this.request({
             path: `{{{path}}}`{{#pathParams}}.replace(`{${"{{baseName}}"}}`, encodeURIComponent(String(requestParameters.{{paramName}}))){{/pathParams}},
             method: '{{httpMethod}}',
-            headers: headerParameters,
+            headers: { ...headerParameters, ...options.headers },
             query: queryParameters,
             {{#hasBodyParam}}
             {{#bodyParam}}
@@ -196,7 +243,7 @@ export class {{classname}} extends runtime.BaseAPI {
             {{#hasFormParams}}
             body: formData,
             {{/hasFormParams}}
-        });
+        },options.alertMessage);
 
         {{#returnType}}
         {{#isResponseFile}}
@@ -211,7 +258,7 @@ export class {{classname}} extends runtime.BaseAPI {
         return new runtime.JSONApiResponse<any>(response);
         {{/isListContainer}}
         {{#returnSimpleType}}
-        return new runtime.TextApiResponse(response);
+        return new runtime.TextApiResponse(response) as any;
         {{/returnSimpleType}}
         {{/returnTypeIsPrimitive}}
         {{^returnTypeIsPrimitive}}
@@ -238,10 +285,10 @@ export class {{classname}} extends runtime.BaseAPI {
     {{/summary}}
     */
     {{^useSingleRequestParameter}}
-    async {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}{{#hasMore}}, {{/hasMore}}{{/allParams}}): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}> {
+    async {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}{{#hasMore}}, {{/hasMore}}{{/allParams}}): Promise<BaseResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}>> {
         {{#returnType}}
         const response = await this.{{nickname}}Raw({{#allParams.0}}{ {{#allParams}}{{paramName}}: {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}} }{{/allParams.0}});
-        return await response.value();
+            return createResult(response);
         {{/returnType}}
         {{^returnType}}
         await this.{{nickname}}Raw({{#allParams.0}}{ {{#allParams}}{{paramName}}: {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}} }{{/allParams.0}});
@@ -249,13 +296,13 @@ export class {{classname}} extends runtime.BaseAPI {
     }
     {{/useSingleRequestParameter}}
     {{#useSingleRequestParameter}}
-    async {{nickname}}({{#allParams.0}}requestParameters: {{#prefixParameterInterfaces}}{{classname}}{{/prefixParameterInterfaces}}{{operationIdCamelCase}}Request{{/allParams.0}}): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}> {
+    async {{nickname}}({{#allParams.0}}requestParameters: {{#prefixParameterInterfaces}}{{classname}}{{/prefixParameterInterfaces}}{{operationIdCamelCase}}Request,{{/allParams.0}}options?:RequestExtraOptions): Promise<BaseResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}>> {
         {{#returnType}}
-        const response = await this.{{nickname}}Raw({{#allParams.0}}requestParameters{{/allParams.0}});
-        return await response.value();
+        const response = await this.{{nickname}}Raw({{#allParams.0}}requestParameters,{{/allParams.0}}options);
+        return createResult(response);
         {{/returnType}}
         {{^returnType}}
-        await this.{{nickname}}Raw({{#allParams.0}}requestParameters{{/allParams.0}});
+        await this.{{nickname}}Raw({{#allParams.0}}requestParameters,{{/allParams.0}}options);
         {{/returnType}}
     }
     {{/useSingleRequestParameter}}
@@ -285,3 +332,4 @@ export enum {{operationIdCamelCase}}{{enumName}} {
 {{/operation}}
 {{/operations}}
 {{/hasEnums}}
+

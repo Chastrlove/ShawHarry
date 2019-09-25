@@ -33,15 +33,6 @@ const { entry, template } = getEntryAndTemp();
 module.exports = (env) => {
   (env = env || {}) && !env.NODE_ENV && (env.NODE_ENV = "development");
 
-  env.ENTRY_FILES = JSON.stringify(
-    _.chain(entry)
-      .map((value, key) => {
-        return value;
-      })
-      .flatten()
-      .value(),
-  );
-
   env.clientCfg = cfg[env.NODE_ENV];
 
   const isDev = env.NODE_ENV === "development";
@@ -278,11 +269,11 @@ module.exports = (env) => {
           })
         : [],
       getHtmlPlugin(isPro || isQA),
-      new PreloadPlugin({
+      /*new PreloadPlugin({
         rel: "preload",
         include: "initial",
-        fileBlacklist: [/\.map$/, /hot-update\.js$/],
-      }),
+        // fileBlacklist: [/\.map$/, /hot-update\.js$/],
+      }),*/
       [
         new WebpackBar({
           name: "📦  Webpack",

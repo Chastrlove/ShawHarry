@@ -12,6 +12,9 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import { FormStore, IFormField, FormType } from "common/FormStore";
+import { Field } from "common/Field";
+import * as _ from "lodash";
 /**
  *
  * @export
@@ -63,4 +66,27 @@ export function SysParamVoToJSON(value?: SysParamVo): any {
     pdesc: value.pdesc,
     ppvalue: value.ppvalue,
   };
+}
+
+export type SysParamVoFormKeys = keyof SysParamVo;
+export type SysParamVoNewType = { [P in SysParamVoFormKeys]: SysParamVo[P] };
+export type SysParamVoFormType = FormType<SysParamVoNewType>;
+
+export function SysParamVoFormDefault(): IFormField<SysParamVo> {
+  return {
+    pkey: { value: void 0 },
+    pvalue: { value: void 0 },
+    pdesc: { value: void 0 },
+    ppvalue: { value: void 0 },
+  } as any;
+}
+
+export function createSysParamVoFormStore<T>(field?: IFormField<T>): SysParamVoFormType & FormType<T> {
+  const fields: IFormField<T & SysParamVo> = _.merge<any, any>(SysParamVoFormDefault(), field);
+  return new FormStore(_.mapValues<IFormField<T & SysParamVo>, Field<any>>(fields, (item: any) => {
+    if (typeof item!!.rules !== "undefined") {
+      return new Field(item).validators(...item.rules);
+    }
+    return new Field(item);
+  }) as any);
 }

@@ -12,6 +12,9 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import { FormStore, IFormField, FormType } from "common/FormStore";
+import { Field } from "common/Field";
+import * as _ from "lodash";
 /**
  *
  * @export
@@ -55,4 +58,28 @@ export function CorpUserResourceDtoToJSON(value?: CorpUserResourceDto): any {
     resourceIds: value.resourceIds,
     roles: value.roles,
   };
+}
+
+export type CorpUserResourceDtoFormKeys = keyof CorpUserResourceDto;
+export type CorpUserResourceDtoNewType = { [P in CorpUserResourceDtoFormKeys]: CorpUserResourceDto[P] };
+export type CorpUserResourceDtoFormType = FormType<CorpUserResourceDtoNewType>;
+
+export function CorpUserResourceDtoFormDefault(): IFormField<CorpUserResourceDto> {
+  return {
+    userId: { value: void 0 },
+    resourceIds: { value: void 0 },
+    roles: { value: void 0 },
+  } as any;
+}
+
+export function createCorpUserResourceDtoFormStore<T>(
+  field?: IFormField<T>,
+): CorpUserResourceDtoFormType & FormType<T> {
+  const fields: IFormField<T & CorpUserResourceDto> = _.merge<any, any>(CorpUserResourceDtoFormDefault(), field);
+  return new FormStore(_.mapValues<IFormField<T & CorpUserResourceDto>, Field<any>>(fields, (item: any) => {
+    if (typeof item!!.rules !== "undefined") {
+      return new Field(item).validators(...item.rules);
+    }
+    return new Field(item);
+  }) as any);
 }

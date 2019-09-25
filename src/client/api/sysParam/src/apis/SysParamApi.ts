@@ -12,7 +12,45 @@
  */
 
 import * as runtime from "../runtime";
+import jsCookie from "js-cookie";
+
 import { SysParamVo, SysParamVoFromJSON, SysParamVoToJSON } from "../models";
+
+declare interface BaseResponse<T = any> {
+  status: number;
+  success: boolean;
+  result: T;
+  totalPage?: number;
+  totalCount?: number;
+  pageSize?: number;
+  currentPage: number;
+  header: Headers;
+}
+declare interface RequestExtraOptions {
+  alertMessage?: boolean;
+  headers?: { [key: string]: any };
+  [key: string]: any;
+}
+
+async function createResult<T = any>(response: runtime.ApiResponse<T>) {
+  const { status, headers } = response.raw;
+  const value = await response.value();
+
+  if (headers.has("Authorization")) {
+    jsCookie.set("Authorization", headers.get("Authorization") || "");
+  }
+
+  return {
+    result: value,
+    success: status >= 200 && status < 300,
+    header: headers,
+    status,
+    totalPage: Number(headers.get("X-Total-Page")),
+    totalCount: Number(headers.get("X-Total-Count")),
+    pageSize: Number(headers.get("X-Page-Size")),
+    currentPage: Number(headers.get("X-Current-Page")),
+  };
+}
 
 export interface GetAreaRequest {
   dict: GetAreaDictEnum;
@@ -32,7 +70,10 @@ export class SysParamApi extends runtime.BaseAPI {
    * 地区列表查询
    * 地区列表查询
    */
-  async getAreaRaw(requestParameters: GetAreaRequest): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
+  async getAreaRaw(
+    requestParameters: GetAreaRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
     if (requestParameters.dict === null || requestParameters.dict === undefined) {
       throw new runtime.RequiredError(
         "dict",
@@ -52,12 +93,24 @@ export class SysParamApi extends runtime.BaseAPI {
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request({
-      path: `/sys/area`,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/sys/area`,
+        method: "GET",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+      },
+      options.alertMessage,
+    );
 
     return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SysParamVoFromJSON));
   }
@@ -66,26 +119,41 @@ export class SysParamApi extends runtime.BaseAPI {
    * 地区列表查询
    * 地区列表查询
    */
-  async getArea(requestParameters: GetAreaRequest): Promise<Array<SysParamVo>> {
-    const response = await this.getAreaRaw(requestParameters);
-    return await response.value();
+  async getArea(
+    requestParameters: GetAreaRequest,
+    options?: RequestExtraOptions,
+  ): Promise<BaseResponse<Array<SysParamVo>>> {
+    const response = await this.getAreaRaw(requestParameters, options);
+    return createResult(response);
   }
 
   /**
    * 银行列表查询
    * 银行列表查询
    */
-  async getBankRaw(): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
+  async getBankRaw(options: RequestExtraOptions = {}): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request({
-      path: `/sys/bank`,
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/sys/bank`,
+        method: "GET",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+      },
+      options.alertMessage,
+    );
 
     return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SysParamVoFromJSON));
   }
@@ -94,16 +162,19 @@ export class SysParamApi extends runtime.BaseAPI {
    * 银行列表查询
    * 银行列表查询
    */
-  async getBank(): Promise<Array<SysParamVo>> {
-    const response = await this.getBankRaw();
-    return await response.value();
+  async getBank(options?: RequestExtraOptions): Promise<BaseResponse<Array<SysParamVo>>> {
+    const response = await this.getBankRaw(options);
+    return createResult(response);
   }
 
   /**
    * 银行支行列表查询
    * 银行支行列表查询
    */
-  async getBankBranchRaw(requestParameters: GetBankBranchRequest): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
+  async getBankBranchRaw(
+    requestParameters: GetBankBranchRequest,
+    options: RequestExtraOptions = {},
+  ): Promise<runtime.ApiResponse<Array<SysParamVo>>> {
     if (requestParameters.bankCode === null || requestParameters.bankCode === undefined) {
       throw new runtime.RequiredError(
         "bankCode",
@@ -122,14 +193,26 @@ export class SysParamApi extends runtime.BaseAPI {
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request({
-      path: `/sys/{bankCode}/{cityCode}`
-        .replace(`{${"bankCode"}}`, encodeURIComponent(String(requestParameters.bankCode)))
-        .replace(`{${"cityCode"}}`, encodeURIComponent(String(requestParameters.cityCode))),
-      method: "GET",
-      headers: headerParameters,
-      query: queryParameters,
-    });
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      if (typeof this.configuration.accessToken === "function") {
+        headerParameters["Authorization"] = this.configuration.accessToken("", []);
+      } else {
+        headerParameters["Authorization"] = this.configuration.accessToken;
+      }
+    }
+
+    const response = await this.request(
+      {
+        path: `/sys/{bankCode}/{cityCode}`
+          .replace(`{${"bankCode"}}`, encodeURIComponent(String(requestParameters.bankCode)))
+          .replace(`{${"cityCode"}}`, encodeURIComponent(String(requestParameters.cityCode))),
+        method: "GET",
+        headers: { ...headerParameters, ...options.headers },
+        query: queryParameters,
+      },
+      options.alertMessage,
+    );
 
     return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SysParamVoFromJSON));
   }
@@ -138,9 +221,12 @@ export class SysParamApi extends runtime.BaseAPI {
    * 银行支行列表查询
    * 银行支行列表查询
    */
-  async getBankBranch(requestParameters: GetBankBranchRequest): Promise<Array<SysParamVo>> {
-    const response = await this.getBankBranchRaw(requestParameters);
-    return await response.value();
+  async getBankBranch(
+    requestParameters: GetBankBranchRequest,
+    options?: RequestExtraOptions,
+  ): Promise<BaseResponse<Array<SysParamVo>>> {
+    const response = await this.getBankBranchRaw(requestParameters, options);
+    return createResult(response);
   }
 }
 

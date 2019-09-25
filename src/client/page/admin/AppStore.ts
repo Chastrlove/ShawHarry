@@ -1,19 +1,16 @@
-import { Configuration, SysParamApi } from "api/sysParam/src";
+import { Configuration, SysParamApi, GetAreaDictEnum } from "api/sysParam/src";
+import config from "config/index";
 
-import { fetch as fetchPolyfill } from "whatwg-fetch";
-
-const config = new Configuration({
-  basePath: "http://localhost:12333",
-  fetchApi: fetchPolyfill,
-});
-
-const sysApi = new SysParamApi(config);
+const sysApi = new SysParamApi(new Configuration(config));
 
 export class AppStore {
   public getValue = async () => {
-    /* console.log(23)
-    await sysApi.getArea({
-      dict: GetAreaDictEnum._1,
-    });*/
+    try {
+      const result = await sysApi.getArea({
+        dict: GetAreaDictEnum._1,
+      });
+    } finally {
+      console.log(23);
+    }
   };
 }

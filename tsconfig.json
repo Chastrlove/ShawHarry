@@ -32,7 +32,8 @@
       "common/*": ["src/client/common/*"],
       "components/*": ["src/client/components/*"],
       "page/*": ["src/client/page/*"],
-      "api/*": ["src/client/api/*"]
+      "api/*": ["src/client/api/*"],
+      "config/*": ["src/client/config/*"]
     },
     "lib": ["dom", "es6"]
   },

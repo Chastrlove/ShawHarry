@@ -12,6 +12,9 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import { FormStore, IFormField, FormType } from "common/FormStore";
+import { Field } from "common/Field";
+import * as _ from "lodash";
 /**
  *
  * @export
@@ -63,4 +66,27 @@ export function ResetPasswordDtoToJSON(value?: ResetPasswordDto): any {
     newPassword: value.newPassword,
     confirmPassword: value.confirmPassword,
   };
+}
+
+export type ResetPasswordDtoFormKeys = keyof ResetPasswordDto;
+export type ResetPasswordDtoNewType = { [P in ResetPasswordDtoFormKeys]: ResetPasswordDto[P] };
+export type ResetPasswordDtoFormType = FormType<ResetPasswordDtoNewType>;
+
+export function ResetPasswordDtoFormDefault(): IFormField<ResetPasswordDto> {
+  return {
+    phone: { value: void 0 },
+    oldPassword: { value: void 0 },
+    newPassword: { value: void 0 },
+    confirmPassword: { value: void 0 },
+  } as any;
+}
+
+export function createResetPasswordDtoFormStore<T>(field?: IFormField<T>): ResetPasswordDtoFormType & FormType<T> {
+  const fields: IFormField<T & ResetPasswordDto> = _.merge<any, any>(ResetPasswordDtoFormDefault(), field);
+  return new FormStore(_.mapValues<IFormField<T & ResetPasswordDto>, Field<any>>(fields, (item: any) => {
+    if (typeof item!!.rules !== "undefined") {
+      return new Field(item).validators(...item.rules);
+    }
+    return new Field(item);
+  }) as any);
 }

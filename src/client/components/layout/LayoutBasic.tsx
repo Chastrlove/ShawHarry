@@ -15,9 +15,10 @@ export default class layoutBasicView extends React.Component<any> {
         <Layout>
           <Header />
           <Content>
-            {routes.map((route, key) => {
-              return <AuthorizedRoute route={route} key={route.path}/>
-            })}
+            {/*{routes.map((route, key) => {*/}
+            {/*  return <AuthorizedRoute route={route} key={route.path}/>*/}
+            {/*})}*/}
+            123123
           </Content>
           <Footer />
         </Layout>

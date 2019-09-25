@@ -1,0 +1,25 @@
+
+export type {{classname}}FormKeys = keyof {{classname}};
+export type {{classname}}NewType = {[P in {{classname}}FormKeys]: {{classname}}[P]};
+export type {{classname}}FormType = FormType<{{classname}}NewType>;
+
+export function {{classname}}FormDefault(): IFormField<{{classname}}> {
+    return {
+        {{#vars}}
+        {{name}}: { value: {{^required}}void 0{{/required}}{{#required}}{{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}null{{/defaultValue}}{{/required}} },
+        {{/vars}}
+    } as any;
+}
+
+export function create{{classname}}FormStore<T>(field?: IFormField<T>): {{classname}}FormType & FormType<T> {
+    const fields: IFormField<T & {{classname}}> = _.merge<any , any>({{classname}}FormDefault(), field);
+    return new FormStore(
+        _.mapValues<IFormField<T & {{classname}}>, Field<any>>(fields, (item: any) => {
+
+            if (typeof item!!.rules !== "undefined") {
+                return new Field(item).validators(...item.rules);
+            }
+                return new Field(item);
+        }) as any,
+    );
+}

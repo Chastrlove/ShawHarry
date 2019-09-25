@@ -12,6 +12,9 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import { FormStore, IFormField, FormType } from "common/FormStore";
+import { Field } from "common/Field";
+import * as _ from "lodash";
 /**
  *
  * @export
@@ -112,4 +115,32 @@ export function CorpUserVoToJSON(value?: CorpUserVo): any {
 export enum CorpUserVoStatusEnum {
   NUMBER_1 = 1,
   NUMBER_2 = 2,
+}
+
+export type CorpUserVoFormKeys = keyof CorpUserVo;
+export type CorpUserVoNewType = { [P in CorpUserVoFormKeys]: CorpUserVo[P] };
+export type CorpUserVoFormType = FormType<CorpUserVoNewType>;
+
+export function CorpUserVoFormDefault(): IFormField<CorpUserVo> {
+  return {
+    id: { value: void 0 },
+    realName: { value: void 0 },
+    username: { value: void 0 },
+    mobile: { value: void 0 },
+    currentCorpCode: { value: void 0 },
+    currentCorpName: { value: void 0 },
+    currentCorpType: { value: void 0 },
+    status: { value: void 0 },
+    roles: { value: void 0 },
+  } as any;
+}
+
+export function createCorpUserVoFormStore<T>(field?: IFormField<T>): CorpUserVoFormType & FormType<T> {
+  const fields: IFormField<T & CorpUserVo> = _.merge<any, any>(CorpUserVoFormDefault(), field);
+  return new FormStore(_.mapValues<IFormField<T & CorpUserVo>, Field<any>>(fields, (item: any) => {
+    if (typeof item!!.rules !== "undefined") {
+      return new Field(item).validators(...item.rules);
+    }
+    return new Field(item);
+  }) as any);
 }

@@ -11,9 +11,15 @@
  * Do not edit the class manually.
  */
 
+import { message } from "antd";
 export const BASE_PATH = "http://localhost:8080".replace(/\/+$/, "");
 
 const isBlob = (value: any) => typeof Blob !== "undefined" && value instanceof Blob;
+
+declare interface ErrorResult {
+  errorCode: number;
+  errorMessage: string;
+}
 
 /**
  * This is the base class for all generated API classes.
@@ -41,11 +47,28 @@ export class BaseAPI {
     return this.withMiddleware<T>(...middlewares);
   }
 
-  protected async request(context: RequestOpts): Promise<Response> {
+  protected async request(context: RequestOpts, alertMessage: boolean = true): Promise<Response> {
     const { url, init } = this.createFetchParams(context);
     const response = await this.fetchApi(url, init);
     if (response.status >= 200 && response.status < 300) {
       return response;
+    }
+    if (response.status >= 400 && response.status < 599) {
+      if (response.status === 401) {
+        await message.error("账户已被登出，请重新登录", 1.5);
+        window.location.href = "/login";
+      } else {
+        if (alertMessage) {
+          message.error(response.statusText);
+        }
+      }
+    }
+    if (response.status === 599) {
+      const errorResult = (await response.json()) as ErrorResult;
+      if (alertMessage) {
+        message.error(errorResult.errorMessage);
+      }
+      response["errorResult"] = errorResult;
     }
     throw response;
   }

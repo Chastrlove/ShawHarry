@@ -28,7 +28,7 @@ const devServer = {
   quiet: true,
   public: urls.lanUrlForConfig,
   historyApiFallback: {
-    rewrites: [{ from: "/", to: "/admin.html" }],
+    rewrites: [{ from: "/", to: "/index.html" }],
   },
   // contentBase: "./src", // 服务器启动的根目录，默认为当前执行目录，一般不需要设置
   // watchContentBase: true, //开了这个就会改了文件就刷新页面，热替换没效果
